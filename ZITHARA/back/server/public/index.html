@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Customer Assistant - Entry</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      width: 350px;
+      background: #fff;
+      padding: 2rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    h2 {
+      text-align: center;
+    }
+    input[type="text"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+    }
+    .toggle {
+      text-align: center;
+      margin-top: 10px;
+      cursor: pointer;
+      color: #007bff;
+    }
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="form-container">
+    <h2>Login</h2>
+    <form id="auth-form">
+      <input type="text" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      
+      <div class="remember">
+        <input type="checkbox" id="remember" />
+        <label for="remember">Remember Me</label>
+      </div>
+      
+      <button type="submit">Submit</button>
+    </form>
+    <div class="toggle" onclick="toggleForm()">Don't have an account? Register</div>
+  </div>
+
+  <script>
+    let isLogin = true;
+
+    function toggleForm() {
+      isLogin = !isLogin;
+      document.getElementById("form-container").innerHTML = isLogin
+        ? `
+        <h2>Login</h2>
+        <form id="auth-form">
+          <input type="text" id="email" placeholder="Email" required />
+          <input type="password" id="password" placeholder="Password" required />
+          <div class="remember">
+            <input type="checkbox" id="remember" />
+            <label for="remember">Remember Me</label>
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+        <div class="toggle" onclick="toggleForm()">Don't have an account? Register</div>`
+        : `
+        <h2>Register</h2>
+        <form id="auth-form">
+          <input type="text" id="email" placeholder="Email" required />
+          <input type="password" id="password" placeholder="Password" required />
+          <select id="role" required>
+            <option value="">Select Role</option>
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+          <div class="remember">
+            <input type="checkbox" id="remember" />
+            <label for="remember">Remember Me</label>
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+        <div class="toggle" onclick="toggleForm()">Already have an account? Login</div>`;
+
+      document.getElementById("auth-form").addEventListener("submit", handleAuth);
+    }
+
+    function handleAuth(e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const remember = document.getElementById("remember").checked;
+
+      if (isLogin) {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const user = users.find(u => u.email === email && u.password === password);
+        if (user) {
+          alert("Login successful");
+          if (remember) localStorage.setItem("user", JSON.stringify(user));
+          window.location.href = user.role === "admin" ? "/admin" : "/chat";
+        } else {
+          alert("Invalid credentials");
+        }
+      } else {
+        const role = document.getElementById("role").value;
+        if (!role) return alert("Please select a role");
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        if (users.some(u => u.email === email)) return alert("User already exists");
+        const newUser = { email, password, role };
+        const updatedUsers = [...users, newUser];
+        localStorage.setItem("users", JSON.stringify(updatedUsers));
+        if (remember) localStorage.setItem("user", JSON.stringify(newUser));
+        alert("Registration successful! Please log in.");
+        toggleForm(); // go back to login
+      }
+    }
+
+    document.getElementById("auth-form").addEventListener("submit", handleAuth);
+  </script>
+
+  <!-- Link to external script -->
+  <script src="script.js" defer></script>
+</body>
+</html>

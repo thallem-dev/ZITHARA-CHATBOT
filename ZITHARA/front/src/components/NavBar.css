@@ -1,0 +1,52 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    background: #007bff;
+    padding: 15px 30px;
+    color: white;
+    align-items: center;
+  }
+  
+  .navbar h1 {
+    margin: 0;
+  }
+  
+  .navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+  
+  .navbar a, .navbar button {
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  button:hover, a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Dark mode support */
+  body.dark {
+    background: #111;
+    color: white;
+  }
+  
+  body.dark .form-container,
+  body.dark .chat-container {
+    background: #1e1e1e;
+    color: white;
+  }
+  
+  body.dark input,
+  body.dark select,
+  body.dark button {
+    background: #333;
+    color: white;
+    border: 1px solid #444;
+  }
